@@ -1,7 +1,8 @@
+require('dotenv').config(); // Load environment variables
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const db = require('./db');
+const db = require('./db'); // Database module
 
 const app = express();
 
@@ -24,13 +25,19 @@ db.initialize(process.env.MONGO_URI)
         // API Routes
         app.use('/api/movies', require('./routes/movies'));
 
-        // Form and UI Routes
+        // UI Routes
         app.use('/', require('./routes/ui'));
 
+        // Start the server
         const PORT = process.env.PORT || 3000;
         app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
     })
     .catch((err) => {
         console.error("Failed to initialize database:", err.message);
-        process.exit(1);
+        process.exit(1); // Terminate the process if the database connection fails
     });
+
+// Root Route
+app.get('/', (req, res) => {
+    res.redirect('/ui'); // Redirect to the UI route
+});
